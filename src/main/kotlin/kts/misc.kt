@@ -16,15 +16,16 @@ operator fun String.invoke(args: ArrayList<String>): String {
 }
 
 fun main() {
-    kotlin {
-        version
-//        jvmOptions {
-//            allowUserSignalHandlers
-//        }
+    java {
+        options {
+            version
+        }
     }
 
-    kotlinc {
-        version
+    javac {
+        options {
+            version
+        }
     }
 }
 
