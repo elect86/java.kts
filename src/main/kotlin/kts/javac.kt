@@ -16,7 +16,7 @@ class JavacBuilder(val javac: JavaC) {
     val sourceFiles: ArrayList<File> by javac::sourceFiles
 }
 
-class JavaC {
+class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
 
     var filename: File? = null
     val annPrOptions = ArrayList<String>()
@@ -60,8 +60,8 @@ class JavaC {
 
     val sourceFiles = ArrayList<File>()
 
-    operator fun invoke(): String {
-        val cmd = "kotlinc"
+    override fun cmdLine(): List<String> {
+
         val args = arrayListOf<String>()
 
         filename?.run { args += "@$absolutePath" }
@@ -104,9 +104,11 @@ class JavaC {
         if (version) args += "-version"
         if (wError) args += "-Werror"
 
-        print(cmd)
-        return cmd(args)
+//        print(cmd)
+        return args
     }
+
+    override fun invoke(block: JavacBuilder.() -> Unit) = apply { JavacBuilder(this).block() }
 
     enum class Info {
         all, lines, vars, source, none;

@@ -27,6 +27,12 @@ fun main() {
             version
         }
     }
+
+    JavaC().invoke {
+        options {
+            version
+        }
+    }()
 }
 
 fun ArrayList<String>.add(key: String, value: Any) {

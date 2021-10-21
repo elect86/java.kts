@@ -8,7 +8,7 @@ inline fun java(block: JavaBuilder.() -> Unit) {
     java()
 }
 
-class Java {
+class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
 
     var zero = false
     var dcevm = false
@@ -79,8 +79,7 @@ class Java {
 
     val args = ArrayList<String>()
 
-    operator fun invoke(): String {
-        val cmd = "java"
+    override fun cmdLine(): List<String> {
         val args = arrayListOf<String>()
         if (zero) args += "-zero"
         if (dcevm) args += "-dcevm"
@@ -152,8 +151,10 @@ class Java {
         args += this.args.joinToString(" ")
 
         //        print(cmd)
-        return cmd(args)
+        return args
     }
+
+    override fun invoke(block: JavaBuilder.() -> Unit) = apply { JavaBuilder(this).block() }
 
     enum class Verbose { `class`, module, gc, jni }
     enum class Share {
