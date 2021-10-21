@@ -110,9 +110,11 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
 
         extra(args)
 
-        args += custom
+        if (custom.isNotEmpty())
+            args += custom
 
-        args += sourceFiles.run { joinToString(" ") }
+        if (sourceFiles.isNotEmpty())
+            args += sourceFiles.run { joinToString(" ") }
         //        print(cmd)
         return args
     }
