@@ -149,9 +149,11 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
             sourceFile != null -> args += sourceFile!!.absolutePath
         }
 
-        args += custom
+        if (custom.isNotEmpty())
+            args += custom
 
-        args += this.args.joinToString(" ")
+        if (this.args.isNotEmpty())
+            args += this.args.joinToString(" ")
 
         //        print(cmd)
         return args
