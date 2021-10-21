@@ -60,6 +60,8 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
     var version = false
     var wError = false
 
+    var custom = ""
+
     val sourceFiles = ArrayList<File>()
 
     override fun cmdLine(): List<String> {
@@ -107,6 +109,10 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
         if (wError) args += "-Werror"
 
         extra(args)
+
+        args += custom
+
+        args += sourceFiles.run { joinToString(" ") }
         //        print(cmd)
         return args
     }

@@ -76,6 +76,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
     var module = ""
     var sourceFile: File? = null
 
+    var custom = ""
 
     val args = ArrayList<String>()
 
@@ -147,6 +148,8 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
             module.isNotEmpty() -> args += module
             sourceFile != null -> args += sourceFile!!.absolutePath
         }
+
+        args += custom
 
         args += this.args.joinToString(" ")
 
