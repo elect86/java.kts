@@ -12,6 +12,8 @@ inline fun javac(block: JavacBuilder.() -> Unit) {
 class JavacBuilder(val javac: JavaC) {
 
     fun options(block: JavacOptionsBuilder.() -> Unit) = JavacOptionsBuilder(javac).block()
+    fun extraOptions(block: JavacExtraOptionsBuilder.() -> Unit) = JavacExtraOptionsBuilder(javac).block()
+    fun X(block: JavacExtraOptionsBuilder.() -> Unit) = JavacExtraOptionsBuilder(javac).block()
 
     val sourceFiles: ArrayList<File> by javac::sourceFiles
 }
@@ -104,7 +106,8 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
         if (version) args += "-version"
         if (wError) args += "-Werror"
 
-//        print(cmd)
+        extra(args)
+        //        print(cmd)
         return args
     }
 
@@ -124,4 +127,186 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
     enum class Proc { none, only }
 
     enum class System { jdk, none }
+
+    val extra = Extra()
+
+    class Extra {
+
+        val addExports = mutableMapOf<String, String>()
+        val addReads = mutableMapOf<String, String>()
+        var defaultModuleForCreatedFiles = ""
+        val endorsedDirs = ArrayList<File>()
+        val extDirs = ArrayList<File>()
+        var doclintFormat: Doc? = null
+        val patchModule = mutableMapOf<String, String>()
+        var bootclasspath = ""
+        var bootclasspathAppend = ""
+        var bootclasspathPrepend = ""
+        var diags: Diags? = null
+        var doclintRecommended = false
+        var doclint = ArrayList<String>()
+        var doclintPackage = ""
+        var lintRecommended = false
+        var lint = ArrayList<String>()
+        var maxErrors = -1
+        var maxWarnings = -1
+        var pkginfo: Pkginfo? = null
+        var plugin = ""
+        var prefer: Prefer? = null
+        var print = false
+        var printProcessorInfo = false
+        var printRounds = false
+        var stdout: File? = null
+
+        operator fun invoke(args: ArrayList<String>) {
+
+            if (addExports.isNotEmpty()) {
+                args += "--add-exports"
+                for ((key, value) in addExports)
+                    args += "$key=$value"
+            }
+            if (addReads.isNotEmpty()) {
+                args += "--add-reads"
+                for ((key, value) in addReads)
+                    args += "$key=$value"
+            }
+            if (defaultModuleForCreatedFiles.isNotEmpty()) args.add("--default-module-for-created-files", defaultModuleForCreatedFiles)
+            if (endorsedDirs.isNotEmpty()) args += "-Djava.endorsed.dirs=${endorsedDirs.joinToString(File.pathSeparator)}"
+            if (extDirs.isNotEmpty()) args += "-Djava.ext.dirs=${extDirs.joinToString(File.pathSeparator)}"
+            doclintFormat?.let { args.add("--doclint-format", it) }
+            if (patchModule.isNotEmpty()) {
+                args += "--patch-module"
+                for ((key, value) in patchModule)
+                    args += "$key=$value"
+            }
+            if (bootclasspath.isNotEmpty()) args += "-Xbootclasspath:$bootclasspath"
+            if (bootclasspathAppend.isNotEmpty()) args += "-Xbootclasspath/a:$bootclasspathAppend"
+            if (bootclasspathPrepend.isNotEmpty()) args += "-Xbootclasspath/p:$bootclasspathPrepend"
+            diags?.let { args += "-Xdiags:$it" }
+            if (doclintRecommended) args += "-Xdoclint"
+            if (doclint.isNotEmpty()) args += "-Xdoclint:${doclint.joinToString(",")}"
+            if (doclintPackage.isNotEmpty()) args += "-Xdoclint/package:$doclintPackage"
+            if (lintRecommended) args += "-Xlint"
+            if (lint.isNotEmpty()) args += "-Xling:${lint.joinToString(",")}"
+            if (maxErrors != -1) args.add("-Xmaxerrs", maxErrors)
+            if (maxWarnings != -1) args.add("-Xmaxwarns", maxWarnings)
+            pkginfo?.let { args += "-Xpkginfo:$it" }
+            if (plugin.isNotEmpty()) args += "-Xplugin:\"$plugin\""
+            prefer?.let { args += "-Xprefer:$it" }
+            if (print) args += "-Xprint"
+            if (printProcessorInfo) args += "-XprintProcessorInfo"
+            if (printRounds) args += "-XprintRounds"
+            stdout?.run { args.add("-Xstdout", absolutePath) }
+        }
+    }
 }
+
+enum class Doc { html4, html5 }
+enum class Diags { compact, verbose }
+
+enum class Doclint {
+    all, none, accessibility, html, missing, reference, syntax;
+
+    val public
+        get() = "$name/public"
+    val protected
+        get() = "$name/protected"
+    val `package`
+        get() = "$name/package"
+    val private
+        get() = "$name/private"
+}
+
+enum class Lint {
+    /** Enable all warnings */
+    all,
+
+    /** Warn about an auxiliary class that is hidden in a source file, and is used from other files. */
+    auxiliaryclass,
+
+    /** Warn about use of unnecessary casts. */
+    cast,
+
+    /** Warn about issues related to classfile contents. */
+    classfile,
+
+    /** Warn about use of deprecated items. */
+    deprecation,
+
+    /** Warn about items marked as deprecated in JavaDoc but not using the @Deprecated annotation. */
+    `dep-ann`,
+
+    /** Warn about division by constant integer 0. */
+    divzero,
+
+    /** Warn about empty statement after if. */
+    empty,
+
+    /** Warn about issues regarding module exports. */
+    exports,
+
+    /** Warn about falling through from one case of a switch statement to the next. */
+    fallthrough,
+
+    /** Warn about finally clauses that do not terminate normally. */
+    finally,
+
+    /** Warn about module system related issues. */
+    module,
+
+    /** Warn about issues regarding module opens. */
+    opens,
+
+    /** Warn about issues relating to use of command line options. */
+    options,
+
+    /** Warn about issues regarding method overloads. */
+    overloads,
+
+    /** Warn about issues regarding method overrides. */
+    overrides,
+
+    /** Warn about invalid path elements on the command line. */
+    path,
+
+    /** Warn about issues regarding annotation processing. */
+    processing,
+
+    /** Warn about use of raw types. */
+    rawtypes,
+
+    /** Warn about use of API that has been marked for removal. */
+    removal,
+
+    /** Warn about use of automatic modules in the requires clauses. */
+    `requires-automatic`,
+
+    /** Warn about automatic modules in requires transitive. */
+    `requires-transitive-automatic`,
+
+    /** Warn about Serializable classes that do not provide a serial version ID. Also warn about access to
+     *  non-public members from a serializable element. */
+    serial,
+
+    /** Warn about accessing a static member using an instance. */
+    static,
+
+    /** Warn about issues relating to use of try blocks (i.e. try-with-resources). */
+    `try`,
+
+    /** Warn about unchecked operations. */
+    unchecked,
+
+    /** Warn about potentially unsafe vararg methods */
+    varargs,
+
+    /** Warn about use of preview language features */
+    preview,
+
+    /** Disable all warnings */
+    none,
+}
+
+enum class Pkginfo { always, legacy, nonempty }
+
+enum class Prefer { source, newer }

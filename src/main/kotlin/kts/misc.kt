@@ -26,13 +26,18 @@ fun main() {
         options {
             version
         }
+
     }
 
-    JavaC().invoke {
-        options {
-            version
+    val javac = JavaC().invoke {
+        extraOptions {
+            doclint {
+                +Doclint.all
+                -Doclint.html.`package`
+            }
         }
-    }()
+    }
+    println(javac.cmdLine)
 }
 
 fun ArrayList<String>.add(key: String, value: Any) {
