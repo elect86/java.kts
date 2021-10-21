@@ -183,6 +183,7 @@ class JavaOptionsBuilder(val java: Java) {
 
 
     fun extraOptions(block: ExtraOptions.() -> Unit) = ExtraOptions().block()
+    fun X(block: ExtraOptions.() -> Unit) = ExtraOptions().block()
 
     inner class ExtraOptions {
 
