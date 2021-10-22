@@ -33,4 +33,6 @@ class JavaBuilder(val java: Java) {
         set(value) {
             java.sourceFile = value
         }
+
+    val arguments: ArrayList<String> by java::arguments
 }

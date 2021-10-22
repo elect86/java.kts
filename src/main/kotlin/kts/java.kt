@@ -152,7 +152,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
         if (custom.isNotEmpty())
             args += custom
 
-            args += arguments
+        args += arguments
 
         //        print(cmd)
         return args
