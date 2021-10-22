@@ -20,12 +20,14 @@ fun main() {
         options {
             version
         }
+        println(java.cmdLine())
     }
 
     javac {
         options {
             version
         }
+        println(javac.cmdLine())
     }
 
 //    val javac = JavaC().invoke {

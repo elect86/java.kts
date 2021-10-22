@@ -78,7 +78,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
 
     var custom = ""
 
-    val args = ArrayList<String>()
+    val arguments = ArrayList<String>()
 
     override fun cmdLine(): List<String> {
         val args = arrayListOf<String>()
@@ -152,8 +152,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
         if (custom.isNotEmpty())
             args += custom
 
-        if (this.args.isNotEmpty())
-            args += this.args.joinToString(" ")
+            args += arguments
 
         //        print(cmd)
         return args

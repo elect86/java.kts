@@ -113,8 +113,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
         if (custom.isNotEmpty())
             args += custom
 
-        if (sourceFiles.isNotEmpty())
-            args += sourceFiles.map { it.absolutePath }
+        args += sourceFiles.map { it.absolutePath }
         //        print(cmd)
         return args
     }
