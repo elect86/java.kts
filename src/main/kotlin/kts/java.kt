@@ -12,7 +12,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
 
     var zero = false
     var dcevm = false
-    val classPath = ArrayList<String>()
+    val classPath = ArrayList<File>()
     val modulePath = ArrayList<String>()
     val upgradeModulePath = ArrayList<String>()
     var listModules = false
@@ -84,7 +84,7 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
         val args = arrayListOf<String>()
         if (zero) args += "-zero"
         if (dcevm) args += "-dcevm"
-        if (classPath.isNotEmpty()) args.add("-cp", classPath.joinToString(File.pathSeparator))
+        if (classPath.isNotEmpty()) args.add("-cp", classPath.joinToString(File.pathSeparator) { it.absolutePath })
         if (modulePath.isNotEmpty()) args.add("-p", modulePath.joinToString(File.pathSeparator))
         if (upgradeModulePath.isNotEmpty()) args.add("--upgrade-module-path", upgradeModulePath.joinToString(File.pathSeparator))
         if (listModules) args + "--list-modules"

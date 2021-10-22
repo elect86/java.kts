@@ -20,7 +20,7 @@ class JavaOptionsBuilder(val java: Java) {
         }
 
     /** list of directories, JAR archives, and ZIP archives to search for class files. */
-    val classPath: ArrayList<String> by java::classPath
+    val classPath: ArrayList<File> by java::classPath
 
     /** list of directories, each directory is a directory of modules. */
     val modulePath: ArrayList<String> by java::modulePath
