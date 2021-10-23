@@ -60,7 +60,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
     var version = false
     var wError = false
 
-    var custom = ""
+    val custom = ArrayList<String>()
 
     val sourceFiles = ArrayList<File>()
 
@@ -110,8 +110,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
 
         extra(args)
 
-        if (custom.isNotEmpty())
-            args += custom
+        args += custom
 
         args += sourceFiles.map { it.absolutePath }
         //        print(cmd)
