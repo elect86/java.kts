@@ -112,8 +112,12 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
 
         args += custom
 
-        args += sourceFiles.map { it.absolutePath }
-        //        print(cmd)
+        for (src in sourceFiles)
+            if (src.isFile && src.extension == "java")
+                args += src.absolutePath
+            else // it's a dir, expand
+                args += src.walk().filter { it.isFile && it.extension == "java" }.map { it.absolutePath }
+
         return args
     }
 
