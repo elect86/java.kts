@@ -142,15 +142,15 @@ class Java(override val cmd: String = "java") : Cmd<JavaBuilder> {
         for ((key, value) in patchModule) args.add("--patch-module", "$key=${value.joinToString(File.pathSeparator) { it.absolutePath }}")
         if (source != -1) args.add("--source", source)
 
+        if (custom.isNotEmpty())
+            args += custom
+
         when {
             mainClass.isNotEmpty() -> args += mainClass
             jar != null -> args += jar!!.absolutePath
             module.isNotEmpty() -> args += module
             sourceFile != null -> args += sourceFile!!.absolutePath
         }
-
-        if (custom.isNotEmpty())
-            args += custom
 
         args += arguments
 
