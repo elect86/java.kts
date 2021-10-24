@@ -20,11 +20,7 @@ class JavacOptionsBuilder(val javac: JavaC) {
     val addModules: ArrayList<String> by javac::addModules
 
     /** Override location of bootstrap class files */
-    var bootClassPath: File
-        @Deprecated(message = "Write only property", level = DeprecationLevel.HIDDEN) get() = error("")
-        set(value) {
-            javac.bootClassPath = value
-        }
+    val bootClassPath: ArrayList<File> by javac::bootClassPath
 
     /** Specify where to find user class files and annotation processors */
     val classPath: ArrayList<File> by javac::classPath
