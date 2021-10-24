@@ -24,7 +24,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
     val annPrOptions = ArrayList<String>()
     val addModules = ArrayList<String>()
     var bootClassPath: File? = null
-    var classPath: File? = null
+    val classPath = ArrayList<File>()
     var directory: File? = null
     var deprecation = false
     var enablePreview = false
@@ -72,7 +72,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
         for (a in annPrOptions) args += "-A$a"
         if (addModules.isNotEmpty()) args.add("--add-modules", addModules.joinToString(","))
         bootClassPath?.run { args.add("--boot-class-path", absolutePath) }
-        classPath?.run { args.add("-cp", absolutePath) }
+        if (classPath.isNotEmpty()) args.add("-cp", classPath.joinToString(File.pathSeparator))
         directory?.run { args.add("-d", absolutePath) }
         if (deprecation) args += "-deprecation"
         if (enablePreview) args += "--enable-preview"

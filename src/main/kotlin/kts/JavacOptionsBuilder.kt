@@ -27,11 +27,7 @@ class JavacOptionsBuilder(val javac: JavaC) {
         }
 
     /** Specify where to find user class files and annotation processors */
-    var classPath: File
-        @Deprecated(message = "Write only property", level = DeprecationLevel.HIDDEN) get() = error("")
-        set(value) {
-            javac.classPath = value
-        }
+    val classPath: ArrayList<File> by javac::classPath
 
     /** Specify where to place generated class files */
     var directory: File
