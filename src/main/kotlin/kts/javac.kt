@@ -72,8 +72,13 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
         for (a in annPrOptions) args += "-A$a"
         if (addModules.isNotEmpty()) args.add("--add-modules", addModules.joinToString(","))
         if (bootClassPath.isNotEmpty()) args.add("--boot-class-path", bootClassPath.joinToString(File.separator) { it.absolutePath })
-        if (classPath.isNotEmpty()) args.add("-cp", classPath.joinToString(File.pathSeparator) { it.absolutePath })
-        directory?.run { args.add("-d", absolutePath) }
+        val cp = ArrayList<File>(classPath.size)
+        directory?.let {
+            args.add("-d", it.absolutePath)
+            cp += it
+        }
+        cp += classPath
+        if (cp.isNotEmpty()) args.add("-cp", cp.joinToString(File.pathSeparator) { it.absolutePath })
         if (deprecation) args += "-deprecation"
         if (enablePreview) args += "--enable-preview"
         encoding?.run { args.add("-encoding", name()) }
