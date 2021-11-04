@@ -63,6 +63,7 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
     val custom = ArrayList<String>()
 
     val sourceFiles = ArrayList<File>()
+    var sourceFilename: File? = null
 
     override fun cmdLine(): List<String> {
 
@@ -117,11 +118,20 @@ class JavaC(override val cmd: String = "javac") : Cmd<JavacBuilder> {
 
         args += custom
 
+        val sources = ArrayList<String>()
+
         for (src in sourceFiles)
             if (src.isFile && src.extension == "java")
-                args += src.absolutePath
+                sources += src.absolutePath
             else // it's a dir, expand
-                args += src.walk().filter { it.isFile && it.extension == "java" }.map { it.absolutePath }
+                sources += src.walk().filter { it.isFile && it.extension == "java" }.map { it.absolutePath }
+
+        sourceFilename?.let {
+            it.writeText(sources.joinToString("\n"))
+            args += "@${it.absolutePath}"
+        } ?: run {
+            args += sources
+        }
 
         return args
     }
